@@ -46,3 +46,7 @@ group :development do
   # gem "spring"
 end
 
+
+gem "devise", "~> 4.9"
+
+gem "strong_password", "~> 0.0.10"
