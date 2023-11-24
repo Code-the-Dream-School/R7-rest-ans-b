@@ -1,12 +1,13 @@
 require 'swagger_helper'
 
 RSpec.describe 'api/v1/members', type: :request do
+  let!(:user) { FactoryBot.create(:user)}
+  let!(:members) { FactoryBot.create_list(:member, 15, user: user)}
+  let!(:member_id) { members.first.id }
+  let!(:member) { FactoryBot.build(:member, user: user)}
   before(:each) do
-    sign_in FactoryBot.create(:user)
+    sign_in user
   end
-  let!(:members) { FactoryBot.create_list(:member, 10) }
-  let(:member_id) { members.first.id }
-  let!(:member) { FactoryBot.build(:member)}
 
   path '/api/v1/members' do
 
