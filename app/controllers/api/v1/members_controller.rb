@@ -6,18 +6,21 @@ class Api::V1::MembersController < ApplicationController
   
     # GET /members
     def index
-      @members = Member.all
-      render json: @members
+      @members = Member.where(user_id: current_user.id)
+      render json: { members: @members }
     end
    
     # GET /members/:id
     def show
-      render json: @member
+      if check_access
+        render json: @member
+      end
     end
   
     # POST /members
     def create
       @member = Member.new(member_params)
+      @member.user_id = current_user.id
       if @member.save
         render json: @member, status: 201
       else
@@ -30,6 +33,9 @@ class Api::V1::MembersController < ApplicationController
     # PUT /members/:id
     def update
       # your code godes here
+      if !check_access
+        return
+      end
       if @member.update(member_params)
         render json: @member, status: 200
       else
@@ -41,8 +47,10 @@ class Api::V1::MembersController < ApplicationController
   
     # DELETE /members/:id
     def destroy
-      @member.destroy
-      render json: { message: 'Member record successfully deleted.'}, status: 200
+      if check_access
+        @member.destroy
+        render json: { message: 'Member record successfully deleted.'}, status: 200
+      end
     end
   
     private
@@ -55,4 +63,11 @@ class Api::V1::MembersController < ApplicationController
       @member = Member.find(params[:id])
     end
 
+    def check_access
+      if (@member.user_id != current_user.id) 
+        render json: { message: "The current user is not authorized for that data."}
+        return false
+      end
+      true
+    end
   end
