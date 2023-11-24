@@ -60,7 +60,7 @@ class Api::V1::FactsController < ApplicationController
     def check_access 
       @member = Member.find(params[:member_id])
       if @member.user_id != current_user.id
-        render json: { message: "The current user is not authorized for that data."}
+        render json: { message: "The current user is not authorized for that data."}, status: :unauthorized
       end
     end
   end
