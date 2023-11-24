@@ -50,3 +50,15 @@ end
 gem "devise", "~> 4.9"
 
 gem "strong_password", "~> 0.0.10"
+
+gem "rspec-rails", "~> 6.1"
+
+gem "rexml", "~> 3.2"
+
+gem "rswag", "~> 2.11"
+
+gem "factory_bot_rails", "~> 6.4", :group => :test
+
+gem "faker", "~> 3.2", :group => :test
+
+gem "rails-controller-testing", "~> 1.0", :group => :test
