@@ -1,6 +1,7 @@
-function handle_ajax(event) {
+import { getCookie } from "./cookie_finder.js"
+
+function handle_members(event) {
   console.log('DOM fully loaded and parsed');
-  const authHeader = localStorage.getItem("authHeader");
   const resultsDiv = document.getElementById('results-div');
   const restOpsDiv = document.getElementById('rest-ops');
   const listMembersButton = document.getElementById('list-members');
@@ -11,22 +12,18 @@ function handle_ajax(event) {
   const memberID = document.getElementById('member-id');
   const firstName1 = document.getElementById('member-firstName1');
   const lastName1 = document.getElementById('member-lastName1');
-  const members_path = 'http://localhost:3000/api/v1/members';
+  const members_path = '/api/v1/members';
 
   restOpsDiv.addEventListener('click', (event) => {
     if (event.target === listMembersButton) {
-      fetch(members_path,
-          {  headers: { 'Content-Type': 'application/json',
-          'authorization': authHeader } }
-        ).then((response) => {
+      fetch(members_path)
+        .then((response) => {
         if (response.status === 200) {
           resultsDiv.innerHTML = '';
           response.json().then((data) => {
-            for (let i=0; i<data.length; i++) {
-              let parag = document.createElement('P');
-              parag.textContent = JSON.stringify(data[i]);
-              resultsDiv.appendChild(parag);
-            }
+            let parag = document.createElement('P');
+            parag.textContent = JSON.stringify(data);
+            resultsDiv.appendChild(parag);
           });
         } else {
           alert(`Return code ${response.status} ${response.statusText}`);
@@ -40,10 +37,14 @@ function handle_ajax(event) {
         first_name: firstName.value,
         last_name: lastName.value
       }
+      let headers = {'Content-Type': 'application/json'};
+      let csrf_cookie = getCookie("CSRF-TOKEN");
+      if (csrf_cookie) {
+        headers['X-CSRF-Token'] =  csrf_cookie;
+      }
       fetch(members_path,
         { method: 'POST',
-          headers: { 'Content-Type': 'application/json',
-            'authorization': authHeader },
+          headers: headers,
           body: JSON.stringify(dataObject)
         }
       ).then((response) => {
@@ -68,10 +69,14 @@ function handle_ajax(event) {
         first_name: firstName1.value,
         last_name: lastName1.value
       }
+      let headers = {'Content-Type': 'application/json'};
+      let csrf_cookie = getCookie("CSRF-TOKEN");
+      if (csrf_cookie) {
+        headers['X-CSRF-Token'] =  csrf_cookie;
+      }
       fetch(`${members_path}/${memberID.value}`,
         { method: 'PUT',
-          headers: { 'Content-Type': 'application/json',
-            'authorization': authHeader },
+          headers: headers,
           body: JSON.stringify(dataObject)
         }
       ).then((response) => {
@@ -94,4 +99,4 @@ function handle_ajax(event) {
     }
   });
 }
-document.addEventListener('DOMContentLoaded', handle_ajax(event));
+document.addEventListener('DOMContentLoaded', handle_members(event));
