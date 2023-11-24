@@ -44,7 +44,7 @@ class Api::V1::FactsController < ApplicationController
     def destroy
       # your code goes here
       @fact.destroy
-      render json: {}, status: 200
+      render json: {message: "The fact entry was deleted."}, status: 200
     end
   
     private
@@ -54,7 +54,7 @@ class Api::V1::FactsController < ApplicationController
     end
   
     def set_fact
-      @fact = Fact.find(params[:id])
+      @fact = Fact.find_by(id: params[:id], member_id: params[:member_id])
     end
 
     def check_access 
