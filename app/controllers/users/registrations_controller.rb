@@ -1,5 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
+  skip_forgery_protection
 
   private
 
@@ -10,6 +11,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def register_success
+    cookies["CSRF-TOKEN"] = form_authenticity_token
     render json: { message: 'Signed up sucessfully.' }, status: :created
   end
 
