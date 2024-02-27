@@ -11,7 +11,7 @@ function handle_session() {
   const userPassword = document.getElementById('user-password');
   const userEmail1 = document.getElementById('user-email1');
   const userPassword1 = document.getElementById('user-password1');
-  const users_path = '/users';
+  const users_path = 'http://localhost:3000/users';
 
   restOpsDiv.addEventListener('click', (event) => {
     if (event.target === logonButton) {
@@ -23,9 +23,9 @@ function handle_session() {
       };
       fetch(`${users_path}/sign_in`,
         { method: 'POST',
-          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dataObject)
+          body: JSON.stringify(dataObject),
+          credentials: 'include'
         }
       ).then((response) => {
         if (response.status === 201) {
@@ -51,7 +51,7 @@ function handle_session() {
       }
       fetch(users_path,
         { method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify(dataObject)
         }
       ).then((response) => {
@@ -79,7 +79,8 @@ function handle_session() {
       }
       fetch(`${users_path}/sign_out`,
         { method: 'DELETE',
-          headers: headers
+          headers: headers,
+          credentials: "include"
         }
       ).then((response) => {
         if (response.status === 200) {

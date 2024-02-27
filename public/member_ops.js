@@ -12,7 +12,7 @@ function handle_members(event) {
   const memberID = document.getElementById("member-id");
   const firstName1 = document.getElementById("member-firstName1");
   const lastName1 = document.getElementById("member-lastName1");
-  const members_path = "/api/v1/members";
+  const members_path = "http://localhost:3000/api/v1/members";
   const memberId2 = document.getElementById("member-id2");
   const showMember = document.getElementById("show-member");
   const deleteMember = document.getElementById("delete-member");
@@ -34,7 +34,7 @@ function handle_members(event) {
 
   restOpsDiv.addEventListener("click", (event) => {
     if (event.target === listMembersButton) {
-      fetch(members_path)
+      fetch(members_path, {credentials: 'include'})
         .then((response) => {
           if (response.status === 200) {
             resultsDiv.innerHTML = "";
@@ -64,6 +64,7 @@ function handle_members(event) {
       fetch(members_path, {
         method: "POST",
         headers: headers,
+        credentials: 'include',
         body: JSON.stringify(dataObject),
       }).then((response) => {
         if (response.status === 201) {
@@ -102,6 +103,7 @@ function handle_members(event) {
       fetch(`${members_path}/${memberID.value}`, {
         method: "PUT",
         headers: headers,
+        credentials: 'include',
         body: JSON.stringify(dataObject),
       }).then((response) => {
         if (response.status === 200) {
@@ -128,7 +130,7 @@ function handle_members(event) {
         }
       });
     } else if (event.target === showMember) {
-      fetch(`${members_path}/${memberId2.value}`).then((response) => {
+      fetch(`${members_path}/${memberId2.value}`,{credentials: 'include'}).then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
             resultsDiv.innerHTML = "";
@@ -161,6 +163,7 @@ function handle_members(event) {
       fetch(`${members_path}/${memberId2.value}`, {
         method: "DELETE",
         headers: headers,
+        credentials: 'include'
       }).then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
@@ -186,7 +189,7 @@ function handle_members(event) {
         }
       });
     } else if (event.target === listFacts) {
-      fetch(`${members_path}/${memberId3.value}/facts`).then((response) => {
+      fetch(`${members_path}/${memberId3.value}/facts`,{credentials: 'include'}).then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
             resultsDiv.innerHTML = "";
@@ -224,6 +227,7 @@ function handle_members(event) {
         method: "POST",
         headers: headers,
         body: JSON.stringify(dataObject),
+        credentials: 'include'
       }).then((response) => {
         if (response.status === 201) {
           response.json().then((data) => {
@@ -261,6 +265,7 @@ function handle_members(event) {
       fetch(`${members_path}/${memberId5.value}/facts/${factNumber.value}`, {
         method: "PUT",
         headers: headers,
+        credentials: 'include',
         body: JSON.stringify(dataObject),
       }).then((response) => {
         if (response.status === 200) {
@@ -287,7 +292,7 @@ function handle_members(event) {
         }
       });
     } else if (event.target === showFact) {
-      fetch(`${members_path}/${memberId6.value}/facts/${factNumber2.value}`).then(
+      fetch(`${members_path}/${memberId6.value}/facts/${factNumber2.value}`, {credentials: 'include'}).then(
         (response) => {
           if (response.status === 200) {
             response.json().then((data) => {
@@ -322,6 +327,7 @@ function handle_members(event) {
       fetch(`${members_path}/${memberId6.value}/facts/${factNumber2.value}`, {
         method: "DELETE",
         headers: headers,
+        credentials: 'include'
       }).then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
