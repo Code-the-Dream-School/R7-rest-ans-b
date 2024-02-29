@@ -12,12 +12,23 @@ require "action_mailbox/engine"
 require "action_text/engine"
 require "action_view/railtie"
 require "action_cable/engine"
+require "rack/session/abstract/id"
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+module SendSessionForLocalHost
+  private
+  def security_matches?(request,options)
+    return true unless options[:secure]
+    request.ssl? || request.host == "localhost"
+  end 
+end
+class Rack::Session::Abstract::Persisted
+  prepend SendSessionForLocalHost
+end
 module R7Rest
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -36,6 +47,6 @@ module R7Rest
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Session::CookieStore, same_site: :None, secure: true
   end
 end
