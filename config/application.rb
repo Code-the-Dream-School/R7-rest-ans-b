@@ -19,11 +19,13 @@ require "rack/session/abstract/id"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module SendSessionForLocalHost
+module SendSessionForLocalHost # We need to be able to send a secure cookie in non-SSL cases
+  # In particular, for localhost, or as typically deployed in production, where a proxy
+  # handles the SSL.  This "monkeypatch" is not safe for cases where the server is neither
+  # behind such a proxy or on localhost.
   private
   def security_matches?(request,options)
-    return true unless options[:secure]
-    request.ssl? || request.host == "localhost"
+    return true
   end 
 end
 class Rack::Session::Abstract::Persisted
@@ -45,8 +47,11 @@ module R7Rest
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
+    config.session_store :cookie_store, "Domain": 'codethedream.org'
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, same_site: :None, secure: true
+    ActionDispatch::Cookies::CookieJar.always_write_cookie = true # this will send secure cookies without SSL
+    config.middleware.use ActionDispatch::Session::CookieStore, same_site: :None, 
+      secure: true
   end
 end
