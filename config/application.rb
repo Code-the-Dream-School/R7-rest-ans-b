@@ -78,7 +78,7 @@ module SendSessionForLocalHost # We need to be able to send a secure cookie in n
   # behind such a proxy or on localhost.
   private
   def security_matches?(request,options)
-    @assume_ssl = @default_options.delete(:assume_ssl)
+    @assume_ssl ||= @default_options.delete(:assume_ssl)
     return true unless options[:secure]
     request.ssl? || @assume_ssl == true  
   end 
